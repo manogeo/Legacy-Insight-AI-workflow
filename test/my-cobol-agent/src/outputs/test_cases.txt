@@ -1,0 +1,52 @@
+### Test Case 1: Verify Initialization and Opening of Cursor
+
+**Test Case Description:**
+This test case verifies that the cursor is correctly initialized and opened, and that the SQL operation status code is displayed as expected.
+
+**Input Values:**
+- No specific user input is required for this test case as it focuses on the system's initialization process.
+
+**Expected Output:**
+- The cursor is declared to select all records from the EMPLOYEE table, ordered by last name.
+- The cursor is successfully opened.
+- The SQL operation status code is displayed, indicating a successful operation (e.g., SQLCODE = 0).
+
+**Reasoning:**
+The initialization and opening of the cursor are crucial steps in setting up the environment for fetching employee records. A successful SQL operation status code confirms that the system is ready to proceed with data retrieval.
+
+---
+
+### Test Case 2: Fetch and Display First Employee Record
+
+**Test Case Description:**
+This test case checks the system's ability to fetch and display the first employee record, including handling of null commission values.
+
+**Input Values:**
+- ANSS: 'Y' (to indicate the user wants to fetch and view the first record)
+
+**Expected Output:**
+- The first employee record is fetched and displayed, including department, last name, first name, street, city, state, zip code, and pay rate.
+- If the commission field is not null, it is displayed; otherwise, it is not displayed.
+- The SQL operation status code is displayed, indicating a successful fetch (e.g., SQLCODE = 0).
+
+**Reasoning:**
+This test verifies that the system can correctly fetch and display the first record from the EMPLOYEE table, handling potential null values in the commission field appropriately. Displaying the SQL operation status code ensures that the fetch operation was successful.
+
+---
+
+### Test Case 3: User Decision to Continue or Stop Viewing Records
+
+**Test Case Description:**
+This test case evaluates the system's response to user input when deciding whether to continue fetching records or stop.
+
+**Input Values:**
+- ANSS: 'Y' (to continue viewing the next record)
+- ANSS: 'N' (to stop viewing records)
+
+**Expected Output:**
+- When ANSS is 'Y', the next employee record is fetched and displayed, repeating the process until the user inputs a character other than 'Y' or 'y'.
+- When ANSS is 'N', the loop terminates, and no further records are fetched.
+- The SQL operation status code is displayed after each fetch operation, indicating success or end of data (e.g., SQLCODE = 100 for no more data).
+
+**Reasoning:**
+This test ensures that the system correctly interprets user input to either continue fetching records or terminate the loop. Proper handling of the loop termination is essential for user control over the data viewing process. Displaying the SQL operation status code after each fetch provides feedback on the operation's success or completion.

@@ -1,0 +1,56 @@
+### Test Case 1: Successful Retrieval and Display of Employee Records
+
+**Test Case Description**:  
+Test the system's ability to retrieve and display employee records sequentially from the EMPLOYEE database table, handling null values for commission appropriately.
+
+**Input Values**:  
+- ANSS: 'Y' (to continue fetching records)
+
+**Expected Output**:  
+- DISP-CODE: '0' (indicating successful SQL operation)
+- Employee details displayed: Department, Last Name, First Name, Street, City, State, Zip Code, Pay Rate, and Commission.
+- DISP-RATE: Formatted pay rate of the employee.
+- DISP-COM: Formatted commission or a message indicating null commission if applicable.
+- Prompt for user input after each record.
+
+**Reasoning**:  
+This test case ensures that the system can successfully open a cursor, fetch records, and display them sequentially. It verifies that the system correctly formats and displays employee details, including handling null commissions. The test also checks that the loop continues fetching records when the user inputs 'Y'.
+
+---
+
+### Test Case 2: Handling Null Commission Values
+
+**Test Case Description**:  
+Test the system's ability to handle and display null commission values correctly when fetching employee records.
+
+**Input Values**:  
+- ANSS: 'Y' (to continue fetching records)
+
+**Expected Output**:  
+- DISP-CODE: '0' (indicating successful SQL operation)
+- Employee details displayed with a specific message for null commission.
+- DISP-RATE: Formatted pay rate of the employee.
+- DISP-COM: Message indicating that the commission is null.
+- Prompt for user input after each record.
+
+**Reasoning**:  
+This test case focuses on verifying the system's capability to identify and display null commission values. It checks that the `COM-NULL-IND` is correctly interpreted and that an appropriate message is displayed instead of a numeric value for commission.
+
+---
+
+### Test Case 3: User Termination of Record Fetching
+
+**Test Case Description**:  
+Test the system's response when the user decides to stop fetching records by entering a character other than 'Y' or 'y'.
+
+**Input Values**:  
+- ANSS: 'N' (or any character other than 'Y' or 'y')
+
+**Expected Output**:  
+- DISP-CODE: '0' (indicating successful SQL operation)
+- Display of the current employee details before termination.
+- No further records fetched after the input.
+- Cursor closed successfully.
+
+**Reasoning**:  
+This test case ensures that the system correctly exits the record-fetching loop when the user inputs a character other than 'Y' or 'y'. It verifies that the system stops fetching additional records and closes the cursor appropriately, confirming that user interaction controls the flow as intended.

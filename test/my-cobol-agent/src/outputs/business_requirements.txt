@@ -1,0 +1,64 @@
+# System Functionality Documentation
+
+## Overview
+
+The purpose of this document is to outline the business functionality of a system designed to manage and display employee records. This system interacts with the EMPLOYEE database table to facilitate the retrieval and presentation of employee information to users. The system is intended for stakeholders who require a detailed understanding of how employee data is accessed and manipulated within this application.
+
+## Business Objectives
+
+The system is designed to achieve the following objectives:
+
+1. **Employee Record Retrieval**: The system will access and display records from the EMPLOYEE database table. This functionality ensures that users can obtain up-to-date employee information efficiently.
+
+2. **Sequential Record Viewing**: Users will have the capability to view employee details one record at a time. This feature is crucial for maintaining a focused and manageable display of information.
+
+3. **User-Driven Navigation**: The system will provide users with the option to either continue viewing subsequent records or terminate the viewing process. This interactive feature enhances user autonomy and control over the data presentation.
+
+## Input Specifications
+
+The system requires user input to navigate through the employee records:
+
+- **ANSS Field**: 
+  - **Type**: Character (X)
+  - **Validation**: The input is validated to accept 'Y', 'y', or any other character. This input determines whether the user wishes to continue viewing additional records.
+
+## Output Specifications
+
+The system will produce the following outputs:
+
+- **DISP-RATE**: A formatted presentation of the employee's pay rate.
+- **DISP-COM**: A formatted presentation of the employee's commission.
+- **DISP-CODE**: An indicator of the SQL operation status code.
+- **Employee Details**: Various details such as department, last name, first name, street, city, state, and zip code will be displayed directly from the database fields.
+
+## Business Rules
+
+The system adheres to specific business rules to ensure proper operation:
+
+1. **Cursor Initialization and Opening**:
+   - A cursor is declared to select all records from the EMPLOYEE table, ordered by the last name.
+   - Upon opening the cursor, the system displays the SQL operation status code to verify successful initialization.
+
+2. **Record Fetching and Display**:
+   - The system fetches the first employee record into working-storage variables.
+   - The SQL operation status code is displayed to confirm successful data retrieval.
+   - The system iterates through available records until no further data is present (indicated by SQLCODE < 0 or SQLCODE = 100).
+   - For each record, the system:
+     - Transfers and displays employee details, including department, last name, first name, street, city, state, zip code, and pay rate.
+     - Checks the commission field for null values and displays it if applicable.
+     - Prompts the user to decide on fetching the next record. If the user inputs 'Y' or 'y', the next record is fetched; otherwise, the loop exits.
+
+3. **Cursor Closure**:
+   - The cursor is closed once all records have been processed or the user opts to stop viewing additional records.
+
+## Assumptions and Constraints
+
+The system operates under the following assumptions and constraints:
+
+- The EMPLOYEE table includes fields such as ENO, LNAME, FNAME, STREET, CITY, ST, ZIP, DEPT, PAYRATE, and COM.
+- It is assumed that users will input 'Y' or 'y' to continue viewing records; any other input will cease the record display loop.
+- The commission field (COM) may contain null values, which are identified using the COM-NULL-IND variable.
+- The system is designed for compatibility with IBM-AT environments.
+- SQLCA and EMPREC are incorporated for managing SQL operations and structuring employee records, respectively. 
+
+This documentation provides a comprehensive view of the system's functionality, ensuring stakeholders understand how employee data is managed and presented.
