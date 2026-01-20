@@ -1,8 +1,6 @@
 import streamlit as st
-from generators.business_rules_generator import generate_business_requirements, format_requirements_to_document
-from agents.test_case_generator import generate_test_cases
-from generators.report_generator import generate_pdf_report
-from generators.diagram_generator import generate_logic_diagram 
+from langchain import OpenAI, LLMChain
+from langchain.prompts import PromptTemplate
 import os
 
 st.set_page_config(page_title="COBOL Analyzer", layout="wide")
@@ -13,14 +11,70 @@ st.title("👨‍💻 Legacy COBOL Code Analyzer")
 st.subheader("Paste your COBOL code below:")
 cobol_code = st.text_area("COBOL Code", height=300)
 
+# Define LangChain components
+llm = OpenAI(temperature=0.2, openai_api_key=os.getenv("OPENAI_API_KEY"))
+
+# Prompt for generating business requirements
+business_requirements_prompt = PromptTemplate(
+    input_variables=["cobol_code"],
+    template="""
+    You are an experienced legacy system analyst. Analyze the following COBOL program and extract the core business functionality. Return the result as:
+
+    1. Business Objectives
+    2. Input Fields (name, type, validations)
+    3. Output Fields
+    4. Business Rules (step-by-step logic)
+    5. Assumptions or Constraints
+
+    COBOL Code:
+    {cobol_code}
+
+    Return as bullet points.
+    """
+)
+
+business_requirements_chain = LLMChain(llm=llm, prompt=business_requirements_prompt)
+
+# Prompt for formatting requirements
+format_requirements_prompt = PromptTemplate(
+    input_variables=["bullet_points"],
+    template="""
+    You are a technical writer AI. Rephrase the following bullet-point business requirements into a well-written plain English document.
+
+    Bullet Points:
+    {bullet_points}
+    """
+)
+
+format_requirements_chain = LLMChain(llm=llm, prompt=format_requirements_prompt)
+
+# Prompt for generating test cases
+test_cases_prompt = PromptTemplate(
+    input_variables=["requirements"],
+    template="""
+    You are a QA engineer experienced in writing test cases. Create 3 detailed test scenarios based on the following business requirements:
+
+    {requirements}
+
+    For each test case, include:
+    1. Test Case Description
+    2. Input Values
+    3. Expected Output
+    4. Reasoning
+    """
+)
+
+test_cases_chain = LLMChain(llm=llm, prompt=test_cases_prompt)
+
 if st.button("Analyze"):
     if not cobol_code.strip():
         st.warning("Please paste some COBOL code to analyze.")
     else:
         with st.spinner("Extracting business logic..."):
-            structured = generate_business_requirements(cobol_code)
-            paragraph_doc = format_requirements_to_document(structured)
-            test_cases = generate_test_cases(structured)
+            # Generate business requirements
+            bullet_points = business_requirements_chain.run(cobol_code=cobol_code)
+            paragraph_doc = format_requirements_chain.run(bullet_points=bullet_points)
+            test_cases = test_cases_chain.run(requirements=paragraph_doc)
 
         # Display Outputs
         st.success("✅ Analysis complete!")
@@ -30,23 +84,3 @@ if st.button("Analyze"):
 
         st.subheader("🧪 Generated Test Cases")
         st.code(test_cases)
-        
-# 🧩 Step 4: Logical Diagram (via imported module)
-        with st.spinner("Generating logical diagram..."):
-            try:
-                diagram_code = generate_logic_diagram(paragraph_doc)
-                st.subheader("📊 Logical Flow Diagram")
-                st.markdown(f"```mermaid\n{diagram_code}\n```")
-            except Exception as e:
-                st.error(f"❌ Failed to generate diagram: {e}")
-
-        # Generate and offer PDF download
-        pdf_path = generate_pdf_report(paragraph_doc, test_cases)
-        if os.path.exists(pdf_path):
-            with open(pdf_path, "rb") as f:
-                st.download_button(
-                    label="📥 Download Stakeholder PDF Report",
-                    data=f,
-                    file_name="cobol_analysis_report.pdf",
-                    mime="application/pdf" 
-                )
